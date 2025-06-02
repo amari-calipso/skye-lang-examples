@@ -1,0 +1,49 @@
+struct Explosion {
+    pos: &Vector2,
+    color: Color,
+    particles: Array[Particle],
+    aliveParticles: usz
+}
+
+impl Explosion {
+    fn new(const pos: &Vector2, const color: Color) Self {
+        return Self.{
+            pos, color,
+            particles: Array::new[Particle](),
+            aliveParticles: 0
+        };
+    }
+
+    fn explode(self) {
+        const amt = @cast(usz, randrange(@MIN_PARTICLE_QTY, @MAX_PARTICLE_QTY));
+        self.particles.clear();
+        self.particles.resize(amt);
+        self.aliveParticles = amt;
+
+        for let i = 0usz; i < amt; i++ {
+            self.particles.push(Particle::newExploder(*self.pos, self.color));
+        }
+    }
+
+    fn update(self) {
+        self.aliveParticles = self.particles.length;
+
+        for let i = 0usz; i < self.particles.length; i++ {
+            if !self.particles[i].isAlive() {
+                self.aliveParticles--;
+                continue;
+            } 
+
+            self.particles[i].acceleration += @GRAVITY;
+            self.particles[i].updateExploder();
+        }
+    }
+
+    fn isAlive(const self) bool {
+        return self.aliveParticles != 0;
+    }
+
+    fn free(self) {
+        self.particles.free();
+    }
+}

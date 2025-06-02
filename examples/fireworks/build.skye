@@ -1,0 +1,49 @@
+import "build";
+import "std/collections";
+
+fn main(args: Array[String]) !void {
+    let buildMode = build::Mode::Debug;
+    
+    if args.contains("release") {
+        buildMode = build::Mode::Release;
+    }
+
+    let buf = Array::new[char]();
+    defer buf.free();
+
+    @format(&buf, "src%main.skye", std::os::@SEPARATOR);
+    try build::compileSkye(buf.asString(), "tmp.c", buildMode);
+
+    if args.contains("emit-c") {
+        return (!void)::Ok;
+    }
+
+    buf.clear();
+    @format(&buf, "% -w ", try build::cc());
+    if (buildMode == build::Mode::Release) buf += "-O3 ";
+    buf += "tmp.c -lraylib ";
+
+    if @LINUX {
+        buf += "-o fireworks -lGL -lm -lpthread -ldl -lrt -lX11";
+    } else if @WINDOWS {
+        buf += "-o fireworks.exe -lgdi32";
+    } else {
+        @println("WARNING: Unsupported platform, attempting build with no external libraries");
+    }
+
+    try build::system(buf.asString());
+    
+    let _ = build::removeFile("tmp.c");
+
+    if args.contains("run") {
+        if @WINDOWS {
+            try build::system(".\fireworks.exe");
+            let _ = build::removeFile("fireworks.exe");
+        } else {
+            try build::system("./fireworks");
+            let _ = build::removeFile("fireworks");
+        }
+    }
+
+    return (!void)::Ok;
+}

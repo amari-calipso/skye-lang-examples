@@ -1,0 +1,38 @@
+use core::io;
+
+macro MAX_TERMS 94;
+
+fn getInt() u8 {
+    let buf = Array::new[char]();
+    defer buf.free();
+
+    while true {
+        @print("Insert amount of terms\n> ");
+
+        io::stdIn.readLine(&buf);
+        defer buf.clear();
+
+        const parsed = buf.parseInt[i64]();
+
+        if parsed.isSome() && parsed.Some > 0 && parsed.Some <= @MAX_TERMS {
+            return @cast(u8, parsed.Some);
+        } else {
+            @println("Invalid input. Please retry");
+        }
+    }
+}
+
+fn main() {
+    let a: u64 = 0;
+    let b: u64 = 1;
+
+    let n = getInt();
+
+    while n-- {
+        @println("%", a);
+
+        const c = a + b;
+        a = b;
+        b = c;
+    }
+}

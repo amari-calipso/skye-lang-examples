@@ -1,0 +1,26 @@
+import <"raylib.h">;
+
+#bind #typedef struct Vector2 {
+    x: f32,
+    y: f32
+}
+
+#bind #typedef struct Color {
+    r: u8,
+    g: u8,
+    b: u8,
+    a: u8
+}
+
+#bind fn InitWindow(width: i32, height: i32, title: *const char);
+#bind fn CloseWindow();
+#bind fn SetTargetFPS(fps: i32);
+
+#bind fn WindowShouldClose() u8;
+#bind fn BeginDrawing();
+#bind fn EndDrawing();
+
+#bind fn ColorAlpha(color: Color, alpha: f32) Color;
+
+#bind fn DrawCircle(centerX: i32, centerY: i32, radius: f32, color: Color);
+#bind fn DrawRectangle(posX: i32, posY: i32, width: i32, height: i32, color: Color);

@@ -1,0 +1,14 @@
+import <"raymath.h">;
+
+#bind fn Vector2Scale(v: Vector2, scale: f32) Vector2;
+#bind fn Vector2Add(a: Vector2, b: Vector2) Vector2;
+
+impl Vector2 {
+    fn __setmul__(self, const other: f32) Vector2 {
+        return *self = Vector2Scale(*self, other);
+    }
+
+    fn __setadd__(self, const other: &const Vector2) Vector2 {
+        return *self = Vector2Add(*self, *other);
+    }
+}

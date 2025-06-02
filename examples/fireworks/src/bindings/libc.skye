@@ -1,0 +1,9 @@
+import <"time.h">;
+
+macro RAND_MAX -> i32;
+
+// not accurate, but it works for our needs
+#bind fn time(second: *i64) u32;
+
+#bind fn srand(seed: u32);
+#bind fn rand() i32;

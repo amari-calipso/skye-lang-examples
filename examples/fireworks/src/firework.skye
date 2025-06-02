@@ -1,0 +1,56 @@
+struct Firework {
+    color:     Color,
+    rocket:    Ptr[Particle],
+    explosion: Explosion,
+    exploded:  bool
+}
+
+impl Firework {
+    fn new(pos: Vector2) Self {
+        const color = Color.{ 
+            r: @cast(u8, rand()) % 0xFF,
+            g: @cast(u8, rand()) % 0xFF,
+            b: @cast(u8, rand()) % 0xFF,
+            a: 0xFF
+        };
+
+        let rocket = mem::heapAllocator.put(Particle::new(pos, color));
+
+        return Firework.{
+            color, rocket,
+            explosion: Explosion::new(&(*rocket).pos, color),
+            exploded: false
+        };
+    }
+
+    fn update(self) {
+        if self.exploded {
+            self.explosion.update();
+        } else {
+            (*self.rocket).acceleration += @GRAVITY;
+            (*self.rocket).update();
+
+            if (*self.rocket).velocity.y >= 0.0 {
+                self.exploded = true;
+                self.explosion.explode();
+            }
+        }
+    }
+
+    fn isAlive(self) bool {
+        if self.explosion.isAlive() || !self.exploded {
+            return true;
+        }
+
+        self.explosion.free();
+        self.rocket.free();
+        return false;
+    }
+
+    fn randomPos() Vector2 {
+        return Vector2.{
+            x: @cast(f32, rand() % @RESOLUTION_X),
+            y: @cast(f32, @RESOLUTION_Y)
+        };
+    }
+}

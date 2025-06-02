@@ -1,0 +1,84 @@
+struct Particle {
+    pos:          Vector2,
+    acceleration: Vector2,
+    velocity:     Vector2,
+
+    color:    Color,
+    lifeSpan: u8,
+
+    alive: bool
+}
+
+impl Particle {
+    fn __newCommon(pos: Vector2, color: Color) Self {
+        let self = @empty(Self);
+        self.pos = pos;
+        self.acceleration = @VECTOR2_ZERO;
+
+        self.color = color;
+        self.lifeSpan = 255;
+        self.alive = true;
+
+        return self;
+    }
+
+    fn new(pos: Vector2, color: Color) Self {
+        let self = Particle::__newCommon(pos, color);
+        self.velocity.x = 0.0;
+        self.velocity.y = uniform(-@ROCKET_MAX_INIT_VELOCITY, -@ROCKET_MIN_INIT_VELOCITY);
+        return self;
+    }
+
+    fn newExploder(pos: Vector2, color: Color) Self {
+        let self = Particle::__newCommon(pos, color);
+        self.velocity.x = uniform(-1.0, 1.0);
+        self.velocity.y = uniform(-1.0, 1.0);
+        self.velocity *= uniform(1.0, @PARTICLE_MAX_INIT_VELOCITY);
+        return self;
+    }
+
+    fn isAlive(const self) bool {
+        return self.lifeSpan >= 0 && self.alive;
+    }
+
+    fn __updateCommon(self) {
+        self.pos += self.velocity;
+        self.acceleration = @VECTOR2_ZERO;
+
+        self.alive = !(
+            self.pos.y >= @cast(f32, @RESOLUTION_Y) ||
+            self.pos.x >= @cast(f32, @RESOLUTION_X) ||
+            self.pos.x < 0.0
+        );
+    }
+
+    fn updateExploder(self) {
+        if self.lifeSpan <= @LIFESPAN_DECREASE {
+            self.lifeSpan = 0;
+        } else {
+            self.lifeSpan -= @LIFESPAN_DECREASE;
+        }
+
+        self.velocity *= @PARTICLE_VELOCITY_MULTIPLIER;
+        self.velocity += self.acceleration;
+
+        self.__updateCommon();
+
+        DrawCircle(
+            @cast(i32, self.pos.x), @cast(i32, self.pos.y), 
+            @cast(f32, @PARTICLE_SIZE), 
+            ColorAlpha(self.color, @cast(f32, self.lifeSpan) / 255.0)
+        );
+    }
+
+    fn update(self) {
+        self.velocity += self.acceleration;
+        self.__updateCommon();
+
+        DrawCircle(
+            @cast(i32, self.pos.x), @cast(i32, self.pos.y), 
+            @cast(f32, @FIREWORK_SIZE), 
+            self.color
+        );
+    }
+}

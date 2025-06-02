@@ -1,0 +1,70 @@
+use core::mem;
+
+import "bindings/libc.skye";
+import "bindings/raylib.skye";
+import "bindings/raymath.skye";
+
+macro RESOLUTION_X      1280;
+macro RESOLUTION_Y      720;
+macro FRAMERATE         60;
+macro FIREWORK_SIZE     4;
+macro PARTICLE_SIZE     2;
+macro MIN_PARTICLE_QTY  80;
+macro MAX_PARTICLE_QTY  120;
+macro LIFESPAN_DECREASE 3;
+macro ALPHA_CHANGE      25;
+macro ROCKET_FREQ_PERC  10;
+
+macro PARTICLE_VELOCITY_MULTIPLIER 0.98;
+macro PARTICLE_MAX_INIT_VELOCITY   5.0;
+macro ROCKET_MAX_INIT_VELOCITY     17.0;
+macro ROCKET_MIN_INIT_VELOCITY     8.0;
+
+macro GRAVITY Vector2.{ x: 0.0, y: 0.2 };
+macro BG Color.{ r: 0, g: 0, b: 0, a: 25 };
+
+import "utils.skye";
+import "particle.skye";
+import "explosion.skye";
+import "firework.skye";
+
+fn main() {
+    srand(time(@cast(*i64, @nullptr)));
+
+    InitWindow(@RESOLUTION_X, @RESOLUTION_Y, `Fireworks\0`);
+    defer CloseWindow();
+
+    SetTargetFPS(@FRAMERATE);
+
+    let fireworksFront = Array::new[Firework]();
+    defer fireworksFront.free();
+
+    let fireworksBack = Array::new[Firework]();
+    defer fireworksBack.free();
+
+    while !WindowShouldClose() {
+        BeginDrawing();
+        DrawRectangle(0, 0, @RESOLUTION_X, @RESOLUTION_Y, @BG);
+
+        for let i = 0usz; i < fireworksFront.length; i++ {
+            fireworksFront[i].update();
+        }
+
+        fireworksBack.clear();
+        for let i = 0usz; i < fireworksFront.length; i++ {
+            if fireworksFront[i].isAlive() {
+                fireworksBack.push(fireworksFront[i]);
+            }
+        }
+
+        if rand() % 100 < @ROCKET_FREQ_PERC {
+            fireworksBack.push(Firework::new(Firework::randomPos()));
+        }
+
+        const tmp = fireworksFront;
+        fireworksFront = fireworksBack;
+        fireworksBack = tmp;
+
+        EndDrawing();
+    }
+}

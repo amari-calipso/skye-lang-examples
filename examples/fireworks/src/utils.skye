@@ -1,0 +1,10 @@
+macro VECTOR2_ZERO Vector2.{ x: 0.0, y: 0.0 };
+
+fn uniform(a: f32, b: f32) f32 {
+    const scale = @cast(f32, rand()) / @cast(f32, @RAND_MAX);
+    return a + scale * (b - a);
+}
+
+fn randrange(a: i32, b: i32) i32 {
+    return a + rand() % (b - a);
+}
