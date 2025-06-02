@@ -31,8 +31,7 @@ fn main(args: Array[String]) !void {
         @println("WARNING: Unsupported platform, attempting build with no external libraries");
     }
 
-    try build::system(buf.asString());
-    
+    try build::system(buf.asString());    
     let _ = build::removeFile("tmp.c");
 
     if args.contains("run") {

@@ -8,10 +8,10 @@ struct Firework {
 impl Firework {
     fn new(pos: Vector2) Self {
         const color = Color.{ 
-            r: @cast(u8, rand()) % 0xFF,
-            g: @cast(u8, rand()) % 0xFF,
-            b: @cast(u8, rand()) % 0xFF,
-            a: 0xFF
+            r: @cast(u8, rand()),
+            g: @cast(u8, rand()),
+            b: @cast(u8, rand()),
+            a: 255
         };
 
         let rocket = mem::heapAllocator.put(Particle::new(pos, color));
