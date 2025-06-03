@@ -1,12 +1,12 @@
 struct Explosion {
-    pos: &Vector2,
+    pos: &const Vector2,
     color: Color,
     particles: Array[Particle],
     aliveParticles: usz
 }
 
 impl Explosion {
-    fn new(const pos: &Vector2, const color: Color) Self {
+    fn new(const pos: &const Vector2, const color: Color) Self {
         return Self.{
             pos, color,
             particles: Array::new[Particle](),

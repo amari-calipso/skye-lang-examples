@@ -14,7 +14,7 @@ impl Firework {
             a: 255
         };
 
-        let rocket = mem::heapAllocator.put(Particle::new(pos, color));
+        const rocket = mem::heapAllocator.put(Particle::new(pos, color));
 
         return Firework.{
             color, rocket,
