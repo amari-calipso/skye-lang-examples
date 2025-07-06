@@ -1,18 +1,19 @@
 import "build";
 import "std/collections";
+use core::compiler::Checks;
 
 fn main(args: Array[String]) !void {
-    let buildMode = build::Mode::Debug;
+    let conf = build::Conf::default();
     
     if args.contains("release") {
-        buildMode = build::Mode::Release;
+        conf.checks = Checks::Release;
     }
 
     let buf = Array::new[char]();
     defer buf.free();
 
     @format(&buf, "src%main.skye", std::os::@SEPARATOR);
-    try build::compileSkye(buf.asString(), "tmp.c", buildMode);
+    try build::compileSkyeToC(buf.asString(), "fireworks.c", conf);
 
     if args.contains("emit-c") {
         return (!void)::Ok;
@@ -20,8 +21,8 @@ fn main(args: Array[String]) !void {
 
     buf.clear();
     @format(&buf, "% -w ", try build::cc());
-    if (buildMode == build::Mode::Release) buf += "-O3 ";
-    buf += "tmp.c -lraylib ";
+    if (conf.checks == Checks::Release) buf += "-O3 ";
+    buf += "fireworks.c -lraylib ";
 
     if @LINUX {
         buf += "-o fireworks -lGL -lm -lpthread -ldl -lrt -lX11";
@@ -32,7 +33,7 @@ fn main(args: Array[String]) !void {
     }
 
     try build::system(buf.asString());    
-    let _ = build::removeFile("tmp.c");
+    let _ = build::removeFile("fireworks.c");
 
     if args.contains("run") {
         if @WINDOWS {
