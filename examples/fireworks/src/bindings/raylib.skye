@@ -1,4 +1,11 @@
 import <"raylib.h">;
+extern raylib;
+
+if core::compiler::os::@LINUX {
+    extern GL, pthread, dl, rt, X11;
+} else if core::compiler::os::@WINDOWS {
+    extern gdi32;
+}
 
 #bind #typedef struct Vector2 {
     x: f32,
