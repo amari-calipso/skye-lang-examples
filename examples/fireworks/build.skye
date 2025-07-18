@@ -28,9 +28,9 @@ fn main(args: Array[String]) !void {
 
     if args.contains("run") {
         if windows {
-            try build::command(".\\fireworks.exe", @empty(Slice[Slice[char]]));
+            try build::command(".\\fireworks.exe", @empty(Slice[String]));
         } else {
-            try build::command("./fireworks", @empty(Slice[Slice[char]]));
+            try build::command("./fireworks", @empty(Slice[String]));
         }
 
         let _ = build::removeFile(output);
