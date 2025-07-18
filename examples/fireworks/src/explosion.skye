@@ -28,14 +28,14 @@ impl Explosion {
     fn update(self) {
         self.aliveParticles = self.particles.length;
 
-        for &particle; self.particles {
-            if !particle.isAlive() {
+        for let i = 0usz; i < self.particles.length; i++ {
+            if !self.particles[i].isAlive() {
                 self.aliveParticles--;
                 continue;
-            }
+            } 
 
-            particle.acceleration += @GRAVITY;
-            particle.updateExploder();
+            self.particles[i].acceleration += @GRAVITY;
+            self.particles[i].updateExploder();
         }
     }
 

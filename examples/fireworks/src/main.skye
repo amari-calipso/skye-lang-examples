@@ -46,11 +46,15 @@ fn main() {
         BeginDrawing();
         DrawRectangle(0, 0, @RESOLUTION_X, @RESOLUTION_Y, @BG);
 
-        for (&firework; fireworksFront) firework.update();
+        for let i = 0usz; i < fireworksFront.length; i++ {
+            fireworksFront[i].update();
+        }
 
         fireworksBack.clear();
-        for &firework; fireworksFront {
-            if (firework.isAlive()) fireworksBack.push(*firework);
+        for let i = 0usz; i < fireworksFront.length; i++ {
+            if fireworksFront[i].isAlive() {
+                fireworksBack.push(fireworksFront[i]);
+            }
         }
 
         if rand() % 100 < @ROCKET_FREQ_PERC {
