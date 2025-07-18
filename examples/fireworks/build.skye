@@ -18,7 +18,7 @@ fn main(args: Array[String]) !void {
     @format(&buf, "src%main.skye", std::os::@SEPARATOR);
     
     if args.contains("emit-c") {
-        try build::compileSkyeToC(buf.asString(), "fireworks.c", conf);
+        try build::compileSkyeToC(buf.asString(), "fireworks.c", conf.toSkyeConf());
         return (!void)::Ok;
     } 
 
@@ -28,9 +28,9 @@ fn main(args: Array[String]) !void {
 
     if args.contains("run") {
         if windows {
-            try build::system(".\fireworks.exe");
+            try build::command(".\\fireworks.exe", @empty(Slice[Slice[char]]));
         } else {
-            try build::system("./fireworks");
+            try build::command("./fireworks", @empty(Slice[Slice[char]]));
         }
 
         let _ = build::removeFile(output);
