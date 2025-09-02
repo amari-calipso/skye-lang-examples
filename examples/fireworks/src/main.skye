@@ -31,7 +31,7 @@ import "firework.skye";
 fn main() {
     srand(time(@cast(*i64, @nullptr)));
 
-    InitWindow(@RESOLUTION_X, @RESOLUTION_Y, `Fireworks\0`);
+    InitWindow(@RESOLUTION_X, @RESOLUTION_Y, c"Fireworks\0");
     defer CloseWindow();
 
     SetTargetFPS(@FRAMERATE);
