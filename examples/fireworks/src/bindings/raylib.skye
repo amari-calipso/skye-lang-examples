@@ -7,12 +7,14 @@ if core::compiler::os::@LINUX {
     extern gdi32;
 }
 
-#bind #typedef struct Vector2 {
+#bind(#typedef)
+struct Vector2 {
     x: f32,
     y: f32
 }
 
-#bind #typedef struct Color {
+#bind(#typedef)
+struct Color {
     r: u8,
     g: u8,
     b: u8,
